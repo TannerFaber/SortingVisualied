@@ -1,12 +1,34 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./ArrayElement.js";
+import ArrayElement from "./ArrayElement.js";
+import "./style.css";
 
-ReactDOM.render(<App />, document.getElementById('root'));
+class App extends React.Component {
+  state = { arrayMain: [] };
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+  handleReset = () => {
+    console.log(this.state);
+    this.setState({ arrayMain: [] });
+  };
+
+  render() {
+    return (
+      <div className="container segment">
+        <div className="ui menu">
+          <div className="item">
+            <div className="ui primary button">Run</div>
+          </div>
+          <div className="item">
+            <button onClick={this.handleReset} className="ui button">
+              Reset
+            </button>
+          </div>
+        </div>
+        <ArrayElement array={this.state.arrayMain} />
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<App />, document.querySelector("#root"));
