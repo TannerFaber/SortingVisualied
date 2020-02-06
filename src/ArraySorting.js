@@ -50,6 +50,7 @@ export class ArraySorting extends React.Component {
 
   bubbleSort = () => {
     // r[1]
+    disableBtn();
     const animations = getBubbleSortAnimations(this.state.array);
     const arrayBars = document.getElementsByClassName("array-bar");
     for (let i = 0; i < animations.length; i++) {
@@ -77,6 +78,9 @@ export class ArraySorting extends React.Component {
         }, i * ANIMATION_SPEED_MS);
       }
     }
+    setTimeout(() => {
+      enableBtn();
+    }, animations.length * ANIMATION_SPEED_MS);
   };
 
   render() {
@@ -109,6 +113,20 @@ function generateArray(arraySize, maxValue) {
     Math.floor(Math.random() * maxValue)
   );
   return array;
+}
+
+function disableBtn() {
+  let buttons = document.getElementsByClassName("button");
+  for (let i = 0; i < buttons.length; i++) {
+    buttons[i].disabled = true;
+  }
+}
+
+function enableBtn() {
+  let buttons = document.getElementsByClassName("button");
+  for (let i = 0; i < buttons.length; i++) {
+    buttons[i].disabled = false;
+  }
 }
 
 export default ArraySorting;
