@@ -3,17 +3,16 @@ import { getBubbleSortAnimations } from "./animations";
 import { getMergeSortAnimations } from "./animations";
 
 //=================================== Main Function ===================================
-const ARRAYSIZE = 100;
+const ARRAYSIZE = 50;
 const MAXVALUE = 100;
-const ANIMATION_SPEED_MS = 5;
+// const ANIMATION_SPEED_MS = 10;
 const PRIMARY_COLOR = "aqua";
 const SECONDARY_COLOR = "red";
-// const FINISH_COLOR = "lightgreen";
 
 export class ArraySorting extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { array: [] };
+    this.state = { array: [], arraySize: 50, speed: 30 };
   }
 
   componentDidMount() {
@@ -22,6 +21,7 @@ export class ArraySorting extends React.Component {
 
   resetArray = () => {
     const array = generateArray(ARRAYSIZE, MAXVALUE);
+    document.getElementById("changeSize").value = "50";
     this.setState({ array });
   };
 
@@ -67,18 +67,18 @@ export class ArraySorting extends React.Component {
         setTimeout(() => {
           barOneStyle.backgroundColor = color;
           barTwoStyle.backgroundColor = color;
-        }, i * ANIMATION_SPEED_MS);
+        }, i * this.state.speed);
       } else {
         setTimeout(() => {
           const [barOneIdx, newHeight] = animations[i];
           const barOneStyle = arrayBars[barOneIdx].style;
           barOneStyle.height = `${newHeight}%`;
-        }, i * ANIMATION_SPEED_MS);
+        }, i * this.state.speed);
       }
     }
     setTimeout(() => {
       enableBtn();
-    }, animations.length * ANIMATION_SPEED_MS);
+    }, animations.length * this.state.speed);
   };
 
   //https://github.com/clementmihailescu/Sorting-Visualizer-Tutorial/blob/master/src/SortingVisualizer/SortingVisualizer.jsx
@@ -96,33 +96,56 @@ export class ArraySorting extends React.Component {
         setTimeout(() => {
           barOneStyle.backgroundColor = color;
           barTwoStyle.backgroundColor = color;
-        }, i * ANIMATION_SPEED_MS);
+        }, i * this.state.speed);
       } else {
         setTimeout(() => {
           const [barOneIdx, newHeight] = animations[i];
           const barOneStyle = arrayBars[barOneIdx].style;
           barOneStyle.height = `${newHeight}%`;
-        }, i * ANIMATION_SPEED_MS);
+        }, i * this.state.speed);
       }
     }
     setTimeout(() => {
       enableBtn();
-    }, animations.length * ANIMATION_SPEED_MS);
+    }, animations.length * this.state.speed);
   };
 
+  handleChange = evt => {
+    const size = Math.floor((parseInt(evt.target.value) + 3) * 1.65);
+    const array = generateArray(size, MAXVALUE);
+
+    this.setState({ array });
+
+    generateArray(Math.floor((parseInt(evt.target.value) + 3) * 1.65));
+  };
   render() {
     return (
       <div className="container segment">
         <div className="ui menu">
           <div className="item">
+            <button onClick={this.bubbleSort} className="ui primary button">
+              Bubble Sort
+            </button>
+          </div>
+          <div className="item">
             <button onClick={this.mergeSort} className="ui primary button">
-              Run
+              Merge Sort
             </button>
           </div>
           <div className="item">
             <button onClick={this.resetArray} className="ui button">
               Reset
             </button>
+          </div>
+          <div className="slidecontainer">
+            <input
+              className="slider"
+              id="changeSize"
+              type="range"
+              min="0"
+              max="100"
+              onChange={this.handleChange}
+            />
           </div>
         </div>
         <div className="array">{this.makeBars(this.state.array)}</div>
@@ -143,6 +166,7 @@ function generateArray(arraySize, maxValue) {
 }
 
 function disableBtn() {
+  document.getElementsByClassName("slider")[0].disabled = true;
   let buttons = document.getElementsByClassName("button");
   for (let i = 0; i < buttons.length; i++) {
     buttons[i].disabled = true;
@@ -150,6 +174,7 @@ function disableBtn() {
 }
 
 function enableBtn() {
+  document.getElementsByClassName("slider")[0].disabled = false;
   let buttons = document.getElementsByClassName("button");
   for (let i = 0; i < buttons.length; i++) {
     buttons[i].disabled = false;
@@ -157,7 +182,3 @@ function enableBtn() {
 }
 
 export default ArraySorting;
-
-// =========================================================================================
-// footnotes:
-// =========================================================================================
