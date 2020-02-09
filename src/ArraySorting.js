@@ -3,9 +3,7 @@ import { getBubbleSortAnimations } from "./animations";
 import { getMergeSortAnimations } from "./animations";
 
 //=================================== Main Function ===================================
-const ARRAYSIZE = 50;
 const MAXVALUE = 100;
-// const ANIMATION_SPEED_MS = 10;
 const PRIMARY_COLOR = "aqua";
 const SECONDARY_COLOR = "red";
 
@@ -20,8 +18,8 @@ export class ArraySorting extends React.Component {
   }
 
   resetArray = () => {
-    const array = generateArray(ARRAYSIZE, MAXVALUE);
-    document.getElementById("changeSize").value = "50";
+    const array = generateArray(this.state.arraySize, MAXVALUE);
+    // document.getElementById("changeSize").value = "50";
     this.setState({ array });
   };
 
@@ -111,12 +109,12 @@ export class ArraySorting extends React.Component {
   };
 
   handleChange = evt => {
-    const size = Math.floor((parseInt(evt.target.value) + 3) * 1.65);
-    const array = generateArray(size, MAXVALUE);
+    const arraySize = Math.floor((parseInt(evt.target.value) + 3) * 1.75);
+    const array = generateArray(arraySize, MAXVALUE);
+    const speed = (500 / arraySize) * 1.6;
+    this.setState({ array, speed, arraySize });
 
-    this.setState({ array });
-
-    generateArray(Math.floor((parseInt(evt.target.value) + 3) * 1.65));
+    generateArray(Math.floor((parseInt(evt.target.value) + 3) * 1.75));
   };
   render() {
     return (
