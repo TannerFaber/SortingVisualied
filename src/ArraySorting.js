@@ -1,11 +1,13 @@
 import React from "react";
 import { getBubbleSortAnimations } from "./animations";
 import { getMergeSortAnimations } from "./animations";
+import { getQuickSortAnimations } from "./animations";
 
 //=================================== Main Function ===================================
 const MAXVALUE = 100;
 const PRIMARY_COLOR = "aqua";
 const SECONDARY_COLOR = "red";
+const PIVOT_COLOR = "orange";
 
 export class ArraySorting extends React.Component {
   constructor(props) {
@@ -19,32 +21,7 @@ export class ArraySorting extends React.Component {
 
   resetArray = () => {
     const array = generateArray(this.state.arraySize, MAXVALUE);
-    // document.getElementById("changeSize").value = "50";
     this.setState({ array });
-  };
-
-  // makeBars will return an array of div objects that have
-  makeBars = array => {
-    var bars = [];
-    for (
-      var i = 0;
-      i < array.length;
-      i++ // for (var i in array)
-    ) {
-      bars.push(
-        // maybe make this an object with a height and index property for easy sorting
-        <div
-          className="array-bar"
-          key={i}
-          style={{
-            height: `${array[i]}%`,
-            width: `${100 / array.length}%`,
-            backgroundColor: `${PRIMARY_COLOR}`
-          }}
-        ></div>
-      );
-    }
-    return bars;
   };
 
   bubbleSort = () => {
@@ -71,6 +48,59 @@ export class ArraySorting extends React.Component {
           const [barOneIdx, newHeight] = animations[i];
           const barOneStyle = arrayBars[barOneIdx].style;
           barOneStyle.height = `${newHeight}%`;
+        }, i * this.state.speed);
+      }
+    }
+    setTimeout(() => {
+      enableBtn();
+    }, animations.length * this.state.speed);
+  };
+
+  quickSort = () => {
+    disableBtn();
+    const animations = getQuickSortAnimations(this.state.array);
+    const arrayBars = document.getElementsByClassName("array-bar");
+    for (let i = 0; i < animations.length; i++) {
+      if (animations[i].length === 3) {
+        const index = animations[i][2];
+        const colorString = animations[i][1];
+        let color;
+        if (colorString === "PRIMARY_COLOR") {
+          color = PRIMARY_COLOR;
+        } else if (colorString === "SECONDARY_COLOR") {
+          color = SECONDARY_COLOR;
+        } else {
+          color = PIVOT_COLOR;
+        }
+        const barStyle = arrayBars[index].style;
+        setTimeout(() => {
+          barStyle.background = color;
+        }, i * this.state.speed);
+      } else if (animations[i].length === 4) {
+        const indexOne = animations[i][2];
+        const indexTwo = animations[i][3];
+        const colorString = animations[i][1];
+        let color;
+        if (colorString === "PRIMARY_COLOR") {
+          color = PRIMARY_COLOR;
+        } else if (colorString === "SECONDARY_COLOR") {
+          color = SECONDARY_COLOR;
+        }
+        const barOneStyle = arrayBars[indexOne].style;
+        const barTwoStyle = arrayBars[indexTwo].style;
+        setTimeout(() => {
+          barOneStyle.background = color;
+          barTwoStyle.background = color;
+        }, i * this.state.speed);
+      } else {
+        const indexOne = animations[i][1];
+        const indexTwo = animations[i][3];
+
+        const barOneStyle = arrayBars[indexOne].style;
+        const barTwoStyle = arrayBars[indexTwo].style;
+        setTimeout(() => {
+          barOneStyle.height = `${animations[i][2]}%`;
+          barTwoStyle.height = `${animations[i][4]}%`;
         }, i * this.state.speed);
       }
     }
@@ -111,7 +141,7 @@ export class ArraySorting extends React.Component {
   handleChange = evt => {
     const arraySize = Math.floor((parseInt(evt.target.value) + 3) * 1.75);
     const array = generateArray(arraySize, MAXVALUE);
-    const speed = (500 / arraySize) * 1.6;
+    const speed = (1000 / arraySize) * 1.6;
     this.setState({ array, speed, arraySize });
 
     generateArray(Math.floor((parseInt(evt.target.value) + 3) * 1.75));
@@ -128,6 +158,11 @@ export class ArraySorting extends React.Component {
           <div className="item">
             <button onClick={this.mergeSort} className="ui primary button">
               Merge Sort
+            </button>
+          </div>
+          <div className="item">
+            <button onClick={this.quickSort} className="ui primary button">
+              Quick Sort
             </button>
           </div>
           <div className="item">
@@ -150,6 +185,29 @@ export class ArraySorting extends React.Component {
       </div>
     );
   }
+  // makeBars will return an array of div objects that have
+  makeBars = array => {
+    var bars = [];
+    for (
+      var i = 0;
+      i < array.length;
+      i++ // for (var i in array)
+    ) {
+      bars.push(
+        // maybe make this an object with a height and index property for easy sorting
+        <div
+          className="array-bar"
+          key={i}
+          style={{
+            height: `${array[i]}%`,
+            width: `${100 / array.length}%`,
+            backgroundColor: `${PRIMARY_COLOR}`
+          }}
+        ></div>
+      );
+    }
+    return bars;
+  };
 }
 
 // ================================== Helper Functions ===================================
@@ -178,5 +236,4 @@ function enableBtn() {
     buttons[i].disabled = false;
   }
 }
-
 export default ArraySorting;

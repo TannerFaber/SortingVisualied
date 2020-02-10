@@ -125,3 +125,70 @@ function doMerge(
     mainArray[k++] = auxiliaryArray[j++];
   }
 }
+
+// =======================================================================
+// ===============================QuickSort===============================
+// =======================================================================
+
+export function getQuickSortAnimations(array) {
+  const animations = [];
+  array = quickSort(array, 0, array.length - 1, animations);
+  return animations;
+}
+
+function quickSort(items, left, right, animations) {
+  var index;
+  if (items.length > 1) {
+    index = partition(items, left, right, animations); //index returned from partition
+    if (left < index - 1) {
+      //more elements on the left side of the pivot
+      quickSort(items, left, index - 1, animations);
+    }
+    if (index < right) {
+      //more elements on the right side of the pivot
+      quickSort(items, index, right, animations);
+    }
+  }
+  return items;
+}
+
+function partition(items, left, right, animations) {
+  var pivot = items[Math.floor((right + left) / 2)], //middle element
+    i = left, //left pointer
+    j = right; //right pointer
+  animations.push(["color", "PIVOT_COLOR", Math.floor((right + left) / 2)]); //highlight the pivot element
+  while (i <= j) {
+    while (items[i] < pivot) {
+      animations.push(["color", "SECONDARY_COLOR", i]); // change color
+      animations.push(["color", "PRIMARY_COLOR", i]); // change back
+      i++;
+    }
+    while (items[j] > pivot) {
+      animations.push(["color", "SECONDARY_COLOR", j]); // change color
+      animations.push(["color", "PRIMARY_COLOR", j]); // change back
+      j--;
+    }
+    if (i <= j) {
+      swap(items, i, j, animations); //sawpping two elements
+      i++;
+      j--;
+    }
+  }
+  animations.push(["color", "PRIMARY_COLOR", Math.floor((right + left) / 2)]); //un-highlight the pivot element
+  return i;
+}
+
+function swap(items, leftIndex, rightIndex, animations) {
+  var temp = items[leftIndex];
+  items[leftIndex] = items[rightIndex];
+  items[rightIndex] = temp;
+  animations.push(["color", "SECONDARY_COLOR", leftIndex, rightIndex]);
+  animations.push([
+    "swap",
+    leftIndex,
+    items[leftIndex],
+    rightIndex,
+    items[rightIndex]
+  ]); // type, index, newvalue, index, newvalue
+  animations.push(["color", "PRIMARY_COLOR", leftIndex, rightIndex]);
+}
